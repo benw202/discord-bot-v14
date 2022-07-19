@@ -1,7 +1,7 @@
 export const GuildID = '738864299392630914';
 
 export enum Colors {
-    FBW_CYAN = '#00E0FE',
+    FBW_CYAN = 57598,
 }
 
 export enum CommandCategory {
