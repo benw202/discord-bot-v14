@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js';
+import { Colors, TextChannel } from 'discord.js';
 import { Channels, ModLogsExclude } from '../constants';
 import { makeEmbed } from '../lib/embed';
 
@@ -21,7 +21,7 @@ module.exports = {
 
         if (modLogsChannel && !ModLogsExclude.some((e) => e)) {
             const noLogEmbed = makeEmbed({
-                color: 'RED',
+                color: Colors.Red,
                 author: {
                     name: `[BANNED] ${msg.user.tag}`,
                     icon_url: msg.user.displayAvatarURL({ dynamic: true }),
@@ -42,7 +42,7 @@ module.exports = {
         if (modLogsChannel && !ModLogsExclude.some((e) => e === executor.id)) {
             if (target.id === msg.user.id) {
                 const userBannedEmbed = makeEmbed({
-                    color: 'RED',
+                    color: Colors.Red,
                     author: {
                         name: `[BANNED] ${msg.user.tag}`,
                         icon_url: msg.user.displayAvatarURL({ dynamic: true }),
@@ -66,7 +66,7 @@ module.exports = {
                 await modLogsChannel.send({ embeds: [userBannedEmbed] });
             } else {
                 const userBannedIncompleteEmbed = makeEmbed({
-                    color: 'RED',
+                    color: Colors.Red,
                     author: {
                         name: `[BANNED] ${msg.user.tag}`,
                         icon_url: msg.user.displayAvatarURL({ dynamic: true }),
