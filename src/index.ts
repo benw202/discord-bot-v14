@@ -25,7 +25,7 @@ export const DEBUG_MODE = process.env.DEBUG_MODE === 'true';
 //     intents,
 // });
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildMessageReactions], partials: [Partials.Channel, Partials.Message, Partials.GuildMember, Partials.Reaction, Partials.User] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.DirectMessageReactions, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildPresences], partials: [Partials.Channel, Partials.Message, Partials.GuildMember, Partials.Reaction, Partials.User] });
 
 // const intents = new IntentsBitField(32767);
 // const client = new Client({
