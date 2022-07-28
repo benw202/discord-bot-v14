@@ -1,6 +1,6 @@
 import { start } from 'elastic-apm-node';
 import dotenv from 'dotenv';
-import Discord from 'discord.js';
+import { Client, Partials, ChannelType, GatewayIntentBits, Colors } from 'discord.js';
 import express from 'express';
 import { readdirSync } from 'fs';
 import { join } from 'path';
@@ -8,6 +8,8 @@ import commands from './commands';
 import { makeEmbed } from './lib/embed';
 import Logger from './lib/logger';
 import { connect } from './lib/db';
+
+//const { Client, GatewayIntentBits, Partials, ChannelType } = require('discord.js');
 
 dotenv.config();
 const apm = start({
@@ -17,11 +19,19 @@ const apm = start({
 
 export const DEBUG_MODE = process.env.DEBUG_MODE === 'true';
 
-const intents = new Discord.Intents(32767);
-const client = new Discord.Client({
-    partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION'],
-    intents,
-});
+// const intents = new Discord.Intents(32767);
+// const client = new Discord.Client({
+//     partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION'],
+//     intents,
+// });
+
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.DirectMessageReactions, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildPresences], partials: [Partials.Channel, Partials.Message, Partials.GuildMember, Partials.Reaction, Partials.User] });
+
+// const intents = new IntentsBitField(32767);
+// const client = new Client({
+//     partials: [Partials.Channel, Partials.Message, Partials.GuildMember, Partials.Reaction, Partials.User],
+//     intents,
+// });
 
 let healthy = false;
 
@@ -41,8 +51,12 @@ client.on('disconnect', () => {
     healthy = false;
 });
 
+//client.on('messageCreate', async (msg) => {
+//    const isDm = msg.channel.type === 'DM';
+//    const guildId = !isDm ? msg.guild.id : 'DM';
+
 client.on('messageCreate', async (msg) => {
-    const isDm = msg.channel.type === 'DM';
+    const isDm = msg.channel.type === ChannelType.DM;
     const guildId = !isDm ? msg.guild.id : 'DM';
 
     Logger.debug(`Processing message ${msg.id} from user ${msg.author.id} in channel ${msg.channel.id} of server ${guildId}.`);
@@ -81,7 +95,7 @@ client.on('messageCreate', async (msg) => {
                     } catch ({ name, message, stack }) {
                         Logger.error({ name, message, stack });
                         const errorEmbed = makeEmbed({
-                            color: 'RED',
+                            color: Colors.Red,
                             title: 'Error while Executing Command',
                             description: DEBUG_MODE ? `\`\`\`D\n${stack}\`\`\`` : `\`\`\`\n${name}: ${message}\n\`\`\``,
                         });
@@ -106,15 +120,19 @@ client.on('messageCreate', async (msg) => {
 
 const eventHandlers = readdirSync(join(__dirname, 'handlers'));
 
-for (const file of eventHandlers) {
-    // eslint-disable-next-line global-require,import/no-dynamic-require
-    const handler = require(`./handlers/${file}`);
+try {
+    for (const file of eventHandlers) {
+        // eslint-disable-next-line global-require,import/no-dynamic-require
+        const handler = require(`./handlers/${file}`);
 
-    if (handler.once) {
-        client.once(handler.event, (...args) => handler.executor(...args));
-    } else {
-        client.on(handler.event, (...args) => handler.executor(...args));
+        if (handler.once) {
+            client.once(handler.event, (...args) => handler.executor(...args));
+        } else {
+            client.on(handler.event, (...args) => handler.executor(...args));
+        }
     }
+} catch (e) {
+    Logger.debug(e);
 }
 
 client.login(process.env.BOT_SECRET)
