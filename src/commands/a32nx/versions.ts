@@ -21,7 +21,7 @@ export const versions: CommandDefinition = {
                     value: '> Stable is our version which has features that are the most mature and most tested. '
                         + 'This should be a reliable version for those preferring stability over newest features. '
                         + 'Will be compatible with each major MSFS patch.'
-                        + '\n> Use the installer or [download here](https://api.flybywiresim.com/api/v1/download?url=https://flybywiresim-packages.b-cdn.net/stable/A32NX-stable.zip)',
+                        + '\n> Use the installer or [download here](https://github.com/flybywiresim/a32nx/releases/download/assets/stable/A32NX-stable.zip)',
                     inline: false,
                 },
                 {
@@ -29,7 +29,7 @@ export const versions: CommandDefinition = {
                     value: '> Development will have the latest features that will eventually end up in the next stable release. '
                         + 'In general this version has the latest fixes and newest features but also a slightly higher risk of containing bugs. '
                         + 'Development updates whenever a change is made to the "master" branch on Github. '
-                        + '\n> Use the installer or [download here](https://api.flybywiresim.com/api/v1/download?url=https://flybywiresim-packages.b-cdn.net/vmaster/A32NX-master.zip)',
+                        + '\n> Use the installer or [download here](https://github.com/flybywiresim/a32nx/releases/download/assets/master/A32NX-master.zip)',
                     inline: false,
                 },
                 {
