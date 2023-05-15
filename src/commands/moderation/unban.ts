@@ -1,13 +1,13 @@
-import discord, { EmbedField, Snowflake, User } from 'discord.js';
+import { Colors, EmbedBuilder, EmbedField, GuildMember, Snowflake, User } from 'discord.js';
 import { CommandDefinition } from '../../lib/command';
-import { CommandCategory } from '../../constants';
+import { CommandCategory, RoleGroups } from '../../constants';
 import { makeEmbed } from '../../lib/embed';
 
 type UserLike = User | Snowflake
 
 export const unban: CommandDefinition = {
     name: 'unban',
-    requiredPermissions: ['BAN_MEMBERS'],
+    requirements: { roles: RoleGroups.STAFF },
     category: CommandCategory.MODERATION,
     executor: async (msg) => {
         const splitUp = msg.content.replace(/\.unban\s+/, '').split(' ');
@@ -18,18 +18,16 @@ export const unban: CommandDefinition = {
         }
 
         const idArg = splitUp[0];
-
-        return msg.guild.members.unban(idArg).then((user: User | Snowflake) => {
-            msg.channel.send({ embeds: [makeSuccessfulUnbanEmbed(user)] });
-        }).catch(async (error) => {
-            const guildMember = await msg.guild.members.fetch(idArg);
-
-            msg.channel.send({ embeds: [makeFailedUnbanEmbed(guildMember?.user ?? idArg, error)] });
-        });
+        try {
+            const user = await msg.guild.members.unban(idArg);
+            return msg.reply({ embeds: [makeSuccessfulUnbanEmbed(!(user instanceof GuildMember) ? user : idArg)] });
+        } catch {
+            return msg.reply({ embeds: [makeFailedUnbanEmbed(idArg, 'The user is either not banned, or an unknown user.')] });
+        }
     },
 };
 
-function makeSuccessfulUnbanEmbed(user: UserLike): discord.MessageEmbed {
+function makeSuccessfulUnbanEmbed(user: UserLike): EmbedBuilder {
     const fields: EmbedField[] = [];
 
     if (user instanceof User) {
@@ -49,11 +47,11 @@ function makeSuccessfulUnbanEmbed(user: UserLike): discord.MessageEmbed {
     return makeEmbed({
         title: 'User Successfully Unbanned',
         fields,
-        color: 'GREEN',
+        color: Colors.Green,
     });
 }
 
-function makeFailedUnbanEmbed(user: UserLike, error: any): discord.MessageEmbed {
+function makeFailedUnbanEmbed(user: UserLike, error: any): EmbedBuilder {
     const fields: EmbedField[] = [];
 
     if (user instanceof User) {
@@ -79,6 +77,6 @@ function makeFailedUnbanEmbed(user: UserLike, error: any): discord.MessageEmbed 
     return makeEmbed({
         title: 'Failed to Unban User',
         fields,
-        color: 'RED',
+        color: Colors.Red,
     });
 }

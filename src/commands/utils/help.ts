@@ -1,4 +1,4 @@
-import { DMChannel, EmbedFieldData, User } from 'discord.js';
+import { DMChannel, EmbedField, User } from 'discord.js';
 import { CommandDefinition } from '../../lib/command';
 import { makeEmbed, makeLines } from '../../lib/embed';
 import commands from '../index';
@@ -24,12 +24,6 @@ export const help: CommandDefinition = {
         // Decide between DM or docs link
         const selectorMsg = await msg.reply({ embeds: [embed] });
 
-        try {
-            await msg.delete();
-        } catch (e) {
-            Logger.debug('Message was already deleted');
-        }
-
         const filter = (reaction, user) => ['1️⃣', '2️⃣'].includes(reaction.emoji.name) && user.id === author.id;
         selectorMsg.awaitReactions({
             filter,
@@ -45,8 +39,7 @@ export const help: CommandDefinition = {
                     // Slide into the DMs
                     author.createDM()
                         .then(async (dmChannel) => {
-                            const response = await selectorMsg.channel.send(`<@${msg.author.id}>, I've DM'd you with the list of the commands you can use!`);
-                            await selectorMsg.delete();
+                            const response = await msg.reply(`${msg.author}, I've DM'd you with the list of the commands you can use!`);
 
                             setTimeout(() => {
                                 response.delete();
@@ -58,6 +51,13 @@ export const help: CommandDefinition = {
                             } catch (e) {
                                 Logger.error(e);
                             }
+
+                            await selectorMsg.delete();
+                            try {
+                                await msg.delete();
+                            } catch (e) {
+                                Logger.debug('Message was already deleted');
+                            }
                         });
 
                     break;
@@ -67,10 +67,15 @@ export const help: CommandDefinition = {
                         description: 'https://docs.flybywiresim.com/discord-bot/',
                     });
 
-                    await selectorMsg.reply({ embeds: [embed] });
+                    await msg.reply({ embeds: [embed] });
 
                     // Delete the selector
                     await selectorMsg.delete();
+                    try {
+                        await msg.delete();
+                    } catch (e) {
+                        Logger.debug('Message was already deleted');
+                    }
                     break;
                 default:
                     // Unknown reaction -> ignore
@@ -79,6 +84,11 @@ export const help: CommandDefinition = {
             })
             .catch(async () => {
                 await selectorMsg.delete();
+                try {
+                    await msg.delete();
+                } catch (e) {
+                    Logger.debug('Message was already deleted');
+                }
             });
 
         // Send reactions after listener has been set up
@@ -145,11 +155,14 @@ async function handleDmCommunication(dmChannel: DMChannel, author: User, index: 
     await sentEmbedMessage.react('❌');
 }
 
-function renderAllCategories(): EmbedFieldData[] {
+function renderAllCategories(): EmbedField[] {
     let commandArray = Object.values(commands);
 
     // Remove duplicates by name
     commandArray = commandArray.filter((v, i, a) => a.findIndex((t) => t.name === v.name) === i);
+
+    // Sort commands
+    commandArray.sort((a, b) => a.name[0].localeCompare(b.name[0]));
 
     // Group all commands by their category
     const groupedCommands = Object.values(CommandCategory)
@@ -162,13 +175,14 @@ function renderAllCategories(): EmbedFieldData[] {
             };
         });
 
-    const fields: EmbedFieldData[] = [];
+    const fields: EmbedField[] = [];
 
     for (const category of groupedCommands) {
         const fieldsValues = chunkStringArray(category.commands.map(renderCommand), 1024, '\n');
 
         fieldsValues.forEach((value) => {
             fields.push({
+                inline: false,
                 name: category.name,
                 value: value.join('\n'),
             });

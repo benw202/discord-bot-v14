@@ -1,8 +1,168 @@
 ## Changelog
 
+Update <small>_ May 2023</small>
+
+- feat: add airac cycle to simbriefdata (12/05/2023)
+- feat: add command to check last simbrief flightplan (08/05/2023)
+- feat: don't delete nohello with additional content (01/05/2023)
+
+Update <small>_ April 2023</small>
+
+- fix: updating rules (30/04/2023)
+- fix: grammar and hyperlink in embed for utf-8.ts (17/04/2023)
+- feat: add more specific text for the general troubleshooting steps and link to simbridge in the reportes issues and help commands (17/04/2023)
+- feat: Add tca command for tca airbus edition issues (16/04/2023)
+- chore: bump mongoose to version 7.0.3 (13/04/2023)
+- chore: bump typescript to version 5.0.3 (13/04/2023)
+
+Update <small>_ March 2023</small>
+
+- fix: birthday handler proper handling of connections and improvements (25/03/2023)
+- fix: add link for support channel to sg (25/03/2023)
+- feat: Add support Guide command (25/03/2023)
+- feat: add reply functionality for complex commands (25/03/2023)
+- refactor: image optimisations and safer imageBaseUrl (25/03/2023)
+- fix: adds date to warn doc for timeout (25/03/2023)
+- feat: Show specific section link for reported issues command (12/03/2023)
+- feat: reply to question or command message (11/03/2023)
+- refactor: use downscaled gifs for efb and pov (11/03/2023)
+- ci: upload images to Cloudflare R2 (11/03/2023)
+- refactor: migrate commands to new MessageCommandDefinition (09/03/2023)
+- fix: improve wxr and terr command (04/03/2023)
+- refactor: update and fix various commands (04/03/2023)
+- refactor: update existing command permissions (04/03/2023)
+
+Update <small>_ February 2023</small>
+
+- fix: update report channel for experimental (22/02/2023)
+- feat: Add GSX Integration command (22/02/2023)
+- feat: feat: unified command permissions framework (09/02/2023)
+- fix: update the link of .addon command (08/02/2023)
+- feat: ECONNRESET support command (07/02/2023)
+- fix: add link to docs to .trythis command (07/02/2023)
+- feat: PR command (07/02/2023)
+
+Update <small>_ January 2023</small>
+
+- feat: slowmode with timeout and introducing proper scheduler (20/01/2023)
+- feat: Github issues templates and accompanying command (10/01/2023)
+- feat: navigraph discord link, requires a small change in navigraphNavdata command (02/01/2023)
+- fix: roleinfo showing wrong count because of caching (02/01/2023)
+- feat: cacheupdate command to update the bots cache on different server aspects (02/01/2023)
+
+Update <small>_ December 2022</small>
+
+- fix: manualleg image of the doc site and add alias (26/12/2022)
+- feat: navroutetypes command to show different navigation route types (26/12/2022)
+- fix: code typo on simbridgeLog command (26/12/2022)
+- fix: forum post handler was too fast for Discord API and tried to post before the thread really existed (26/12/2022)
+- refactor: add flightplanning alias to atc command (26/12/2022)
+- refactor: update atc command with new link and information (26/12/2022)
+- feat: stickies for forum posts which get posted on forum post create (19/12/2022)
+- refactor: outdated information + links in commands (08/12/2022)
+- fix: fix latlong image typo and prime meridian alignment (04/12/2022)
+- refactor: update wb command for change in Stable (03/12/2022)
+
+Update <small>_ November 2022</small>
+
+- refactor: update CONTRIBUTING documentation to include an explanation on MessageCommandDefinition (27/11/2022)
+- refactor: rename A32NX type to a more generic AIRCRAFT type for the future (27/11/2022)
+- feat: Add logic to show the appropriate message for type specific commands and the option to select using reactions (27/11/2022)
+- feat: Add simple Message Command that can be used with different aircraft types (27/11/2022)
+- refactor: sort commands in help alphabetically (27/11/2022)
+- feat: warns a user automatically when timed out for logging (27/11/2022)
+- feat: SimBridge logs command (14/11/2022)
+- feat: added windows screenshot command (14/11/2022)
+- fix: bugfix where help subcommand was not working for tcedit (14/11/2022)
+- refactor: update wasm command with extra details (14/11/2022)
+- feat: Purge messages on ban (06/11/2022)
+- refactor: update youtube account information (06/11/2022)
+- fix: language on ATC command (06/11/2022)
+- refactor: update the ATC command for more clarity and more options (01/11/2022)
+
+Update <small>_ October 2022</small>
+
+- feat: scam protection now uses timeout instead of a 'muted' role (23/10/2022)
+- refactor: ban and unban commands stability improvements and ban handler fixes for manual bans (23/10/2022)
+- feat: Add image and last used functionality to temporary commands (23/10/2022)
+- feat: add new navdata command explaining the use of navdata by the FBW A32NX (23/10/2022)
+- refactor: rename navdata to navigraph (23/10/2022)
+- fix: metar use of proper unit for wind speed (17/10/2022)
+- refactor: nut meme randomizer cause there's more than one meme (17/10/2022)
+- refactor: Improve DLSS data to highlight blurry displays (17/10/2022)
+- fix: crash when trying to ban a moderator (07/10/2022)
+- feat: add flypadabout command for flyPadOS and aircraft version (03/10/2022)
+
+Update <small>_ September 2022</small>
+
+- feat: add fsltl discord server command (29/9/2022)
+- feat: mcdu command for the detailed MCDU documentation (26/09/2022)
+- refactor: mcdu alias removed from remotemcdu command (26/09/2022)
+- feat: holds command for Holds documentation (26/09/2022)
+- feat: autoland command for Autoland documentation (26/09/2022)
+- feat: direct command for Direct documentation (26/09/2022)
+- fix: Changed image for assistance command (19/09/2022)
+- feat: add .dfd command (19/09/2022)
+- feat: executor added to the msgDelete log (07/09/2022)
+- feat: adds ban dm, refine ban command and handler (06/09/2022)
+- feat: expand vatsim stats with search and separate observers in its own category (05/09/2022)
+- fix: Fix typo for experimental command in docs (03/09/2022)
+- refactor: Remove async and await from all simple commands (03/09/2022)
+- refactor: updated reported issues docs link (02/09/2022)
+
+Update <small>_ August 2022</small>
+
+- feat: simrate command (31/08/2022)
+- fix: use correct spacing between flypados and version (31/08/2022)
+- docs: update contributing guide and fix punctuation (31/08/2022)
+- feat: verticalguidance, verticalguidancesymbols and verticalspeedpriority commands (27/08/2022)
+- feat: flypados command (27/08/2022)
+- feat: website command (22/08/2022)
+- feat: add vatsim command (21/08/2022)
+- refactor: remove async from MSFS command and message delete (21/08/2022)
+- refactor: remove async/await from invites (21/08/2022)
+- feat: error handling for process start (21/08/2022)
+- refactor(scamlog): code cleanup and error handling (21/08/2022)
+- docs: improve readme (21/08/2022)
+- feat: notams command (21/08/2022)
+- refactor: weight and balance command (21/08/2022)
+- refactor: remove async/await from memes (17/08/2022)
+- feat: add YourControls discord server command (16/08/2022)
+- refactor: role constants in scam log (15/08/2022)
+- docs: added image from dlss command to assets folder (14/08/2022)
+- chore: add editorconfig (14/08/2022)
+- feat: add temporarycommandedit and temporarycommand (14/08/2022)
+- docs: cleanup newlines in command document (14/08/2022)
+- feat: add dlss command (12/08/2022)
+- refactor: simbrief import alias (12/08/2022)
+- feat: add docsearch command (10/08/2022)
+- ci: verify changelog in PR (10/08/2022)
+- feat: add live flights command (08/08/2022)
+- feat: add events command (08/08/2022)
+- refactor: command cleanup (08/08/2022)
+- fix: crash in scamlogs with non-existent roles (08/08/2022)
+- fix: mentions in multiple commands (08/08/2022)
+- feat: adds noHello (06/08/2022)
+- refactor: command-docs.md ordering (05/08/2022)
+- refactor: rename funnies directory to memes (05/08/2022)
+- refactor: extract messageCreate handler (03/08/2022)
+- feat: makeList embed helper (03/08/2022)
+- feat: FMA command (03/08/2022)
+- fix: grammar in .wx command (02/08/2022)
+- refactor: .wx command terrain display on experimental note (01/08/2022)
+- refactor: change SOP command image (01/08/2022)
+
 Update <small>_ July 2022</small>
 
-
+- ci: build setup and lint helm for pr (31/07/2022)
+- fix: ping fixed for count command (31/07/2022)
+- chore: bot service to docker-compose (31/07/2022)
+- chore: bump discord package version with fixes @v14.0.3 (29/07/2022)
+- refactor: add .deadzones alias to .dz command, correct docs (27/07/2022)
+- refactor: add .nws alias to .tiller command (27/07/2022)
+- feat: simbridge support command (27/07/2022)
+- refactor: add steps and image to utf8 command (26/07/2022)
+- feat: cowsay command sanitization (25/07/2022)
 - refactor: update deadzones command (19/07/2022)
 - refactor: downscale .pov and .efb gifs (19/07/2022)
 - fix: use non-vanity Synaptic Discord link (19/07/2022)
@@ -14,7 +174,7 @@ Update <small>_ July 2022</small>
 - refactor: requests to node-fetch (17/07/2022)
 - fix: update .where image link (16/07/2022)
 - chore: add images to repo (16/07/2022)
-- refactor: add .legacy alias to .cotrols (15/07/2022)
+- refactor: add .legacy alias to .controls (15/07/2022)
 - feat: marketplace removal command (14/07/2022)
 - refactor: weather.ts embed title and copy (12/07/2022)
 - docs: add .env.example file. (11/07/2022)

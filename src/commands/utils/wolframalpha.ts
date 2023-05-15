@@ -1,6 +1,7 @@
 import { URLSearchParams } from 'url';
 import fetch from 'node-fetch';
-import { CommandDefinition } from '../../lib/command';
+import { Colors } from 'discord.js';
+import { CommandDefinition, replyWithEmbed } from '../../lib/command';
 import { makeEmbed, makeLines } from '../../lib/embed';
 import { Channels, CommandCategory } from '../../constants';
 import Logger from '../../lib/logger';
@@ -12,26 +13,20 @@ export const wolframalpha: CommandDefinition = {
     name: ['wa', 'calc', 'ask'],
     description: 'Queries the Wolfram Alpha API',
     category: CommandCategory.UTILS,
+    requirements: {
+        channels: [Channels.BOT_COMMANDS],
+        verboseErrors: true,
+    },
     executor: async (msg) => {
-        if (msg.channelId !== Channels.BOT_COMMANDS) {
-            const wrongChannelEmbed = makeEmbed({
-                title: 'Wolfram Alpha Error | Wrong Channel',
-                description: `This command can only be used in the <#${Channels.BOT_COMMANDS}> channel.`,
-                color: 'RED',
-            });
-            await msg.channel.send({ embeds: [wrongChannelEmbed] });
-            return;
-        }
-
         const splitUp = msg.content.replace(/\.wa\s+/, ' ').split(' ');
 
         if (splitUp.length <= 1) {
             const noQueryEmbed = makeEmbed({
                 title: 'Wolfram Alpha Error | Missing Query',
                 description: 'Please provide a query. For example: `.wa How much is 1 + 1?`',
-                color: 'RED',
+                color: Colors.Red,
             });
-            await msg.channel.send({ embeds: [noQueryEmbed] });
+            await msg.reply({ embeds: [noQueryEmbed] });
             return;
         }
         const query = splitUp.slice(1).join(' ');
@@ -53,9 +48,9 @@ export const wolframalpha: CommandDefinition = {
                 const errorEmbed = makeEmbed({
                     title: 'Wolfram Alpha Error',
                     description: response.error,
-                    color: 'RED',
+                    color: Colors.Red,
                 });
-                await msg.channel.send({ embeds: [errorEmbed] });
+                await msg.reply({ embeds: [errorEmbed] });
                 return;
             }
 
@@ -84,7 +79,7 @@ export const wolframalpha: CommandDefinition = {
                         ]),
                     });
 
-                    await msg.reply({ embeds: [waEmbed] });
+                    await replyWithEmbed(msg, waEmbed);
                     return;
                 }
                 const noResultsEmbed = makeEmbed({
@@ -92,9 +87,9 @@ export const wolframalpha: CommandDefinition = {
                     description: makeLines([
                         'No results were found for your query.',
                     ]),
-                    color: 'RED',
+                    color: Colors.Red,
                 });
-                await msg.channel.send({ embeds: [noResultsEmbed] });
+                await msg.reply({ embeds: [noResultsEmbed] });
                 return;
             }
             const obscureQueryEmbed = makeEmbed({
@@ -102,18 +97,18 @@ export const wolframalpha: CommandDefinition = {
                 description: makeLines([
                     'Wolfram Alpha could not understand your query.',
                 ]),
-                color: 'RED',
+                color: Colors.Red,
             });
-            await msg.channel.send({ embeds: [obscureQueryEmbed] });
+            await msg.reply({ embeds: [obscureQueryEmbed] });
             return;
         } catch (e) {
             Logger.error('wolframalpha:', e);
             const fetchErrorEmbed = makeEmbed({
                 title: 'Wolfram Alpha | Fetch Error',
                 description: 'There was an error fetching your request. Please try again later.',
-                color: 'RED',
+                color: Colors.Red,
             });
-            await msg.channel.send({ embeds: [fetchErrorEmbed] });
+            await msg.reply({ embeds: [fetchErrorEmbed] });
         }
     },
 };

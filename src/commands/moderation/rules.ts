@@ -1,19 +1,19 @@
 import { CommandDefinition } from '../../lib/command';
 import { makeEmbed, makeLines } from '../../lib/embed';
-import { CommandCategory } from '../../constants';
+import { Channels, CommandCategory, Roles, RoleGroups } from '../../constants';
 
 const RULES_EMBED = makeEmbed({
     title: 'FlyByWire Simulations Server Rules',
     description: makeLines([
         'Below are the rules you must follow to participate in this discord server. Failure to abide by these rules could result in a removal from the server. Mute/ban evasions will result in a permanent ban.',
         '',
-        'The <@&739187150909866137> reserve the right to action at discretion.',
+        `The <@&${Roles.MODERATION_TEAM}> reserve the right to action at discretion.`,
     ]),
 });
 
 const FAQ_EMBED = makeEmbed({
     title: '<:question:759405702044975114> Frequently Asked Questions',
-    description: 'Check the <#751774575464939580> for the answers to your questions prior to asking in the channels below, post your question in the appropriate channel.',
+    description: `Check the <#${Channels.FAQ}> for the answers to your questions prior to asking in the channels below, post your question in the appropriate channel.`,
 });
 
 const POLICIES_EMBED = makeEmbed({
@@ -22,11 +22,11 @@ const POLICIES_EMBED = makeEmbed({
     fields: [
         {
             name: 'ToS -',
-            value: 'https://discordapp.com/terms \n',
+            value: 'https://discordapp.com/terms',
         },
         {
             name: 'Guidelines -',
-            value: 'https://discordapp.com/guidelines \n',
+            value: 'https://discordapp.com/guidelines',
         },
     ],
 });
@@ -34,28 +34,31 @@ const POLICIES_EMBED = makeEmbed({
 const DISCUSSION_EMBED = makeEmbed({
     title: '<:speech_balloon:759405706804723742> Appropriate Discussion',
     description: makeLines([
-        'We promote discussion in the server, however we expect everyone to follow Discord policies and good housekeeping.',
+        'The prime purpose of this server is to discuss flight sim and aviation topics. Respectful and friendly discussions of general topics in the server are welcome; however, we expect everyone to follow Discord policies and good housekeeping.',
         '',
         '- If you have a message, please post it in the appropriate channel',
         '- Send your message once; do not repeat messages',
         '- Do not send malicious or illegal content',
-        '- No troll messaging',
         '- No general spam',
         '- Do not send multiple unsolicited DM\'s',
+        '- No troll or insensitive messaging, including insensitive inside jokes',
         '- Inappropriate/offensive profile information/picture will not be tolerated',
+        '- Certain topics like politics, religion and other sensitive subjects will only be tolerated if a careful and respectful conversation is held',
         '- To help with moderation and set a standard the server language is English',
+        '',
+        'Moderators and admins will intervene when there is a risk for escalation or when the situation requires to keep the server friendly and tolerant.',
     ]),
 });
 
 const ROLE_EMBED = makeEmbed({
     title: '<:person_raising_hand:759405708994281493> Role Assignment',
-    description: 'We encourage people to use their vast experience and knowledge to help us create a highly detailed addon. If you have skills in Documentation, Modelling and/or Programming, please assign your <#751780817772216401> and get started with the conversation to help us develop the addon.',
+    description: `We encourage people to use their vast experience and knowledge to help us create a highly detailed addon. If you have skills in Documentation, Modelling and/or Programming, please assign your <#${Channels.ROLES}> and get started with the conversation to help us develop the addon.`,
 });
 
 export const rules: CommandDefinition = {
     name: 'rules',
     description: 'Sends the rules',
-    requiredPermissions: ['BAN_MEMBERS'],
+    requirements: { roles: RoleGroups.STAFF },
     category: CommandCategory.MODERATION,
     executor: async (msg) => {
         await msg.channel.send({ embeds: [RULES_EMBED] });

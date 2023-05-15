@@ -1,31 +1,26 @@
-import { TextChannel, User } from 'discord.js';
+import { Colors, TextChannel, User } from 'discord.js';
 import moment from 'moment';
 import { CommandDefinition } from '../../../lib/command';
-import { Roles, Channels, CommandCategory } from '../../../constants';
+import { Channels, CommandCategory, RoleGroups } from '../../../constants';
 import { makeEmbed } from '../../../lib/embed';
 import { getConn } from '../../../lib/db';
 import Warn from '../../../lib/schemas/warnSchema';
 
-const permittedRoles = [
-    Roles.ADMIN_TEAM,
-    Roles.MODERATION_TEAM,
-];
-
 const noConnEmbed = makeEmbed({
     title: 'Warn - No Connection',
     description: 'Could not connect to the database',
-    color: 'RED',
+    color: Colors.Red,
 });
 
 const warnEmbed = (user: User) => makeEmbed({
     title: `${user.tag} was warned successfully`,
-    color: 'GREEN',
+    color: Colors.Green,
 });
 
 const modLogEmbed = (formattedDate, moderator: User, user: User, reason: string) => makeEmbed({
     author: {
         name: `[WARNED]  ${user.tag}`,
-        icon_url: user.displayAvatarURL({ dynamic: true }),
+        iconURL: user.displayAvatarURL(),
     },
     fields: [
         {
@@ -50,7 +45,7 @@ const modLogEmbed = (formattedDate, moderator: User, user: User, reason: string)
         },
     ],
     footer: { text: `User ID: ${user.id}` },
-    color: 'RED',
+    color: Colors.Red,
 });
 
 const dmEmbed = (formattedDate, moderator: User, user: User, reason: string) => makeEmbed({
@@ -74,51 +69,40 @@ const dmEmbed = (formattedDate, moderator: User, user: User, reason: string) => 
     ],
 });
 
-const noPermEmbed = makeEmbed({
-    title: 'Warn',
-    description: 'You do not have permission to use this command.',
-    color: 'RED',
-});
-
 const warnFailed = makeEmbed({
     title: 'Warn - Failed',
     description: 'Failed to warn user, doc not saved to mongoDB',
-    color: 'RED',
+    color: Colors.Red,
 });
 
 const noDM = makeEmbed({
     title: 'Warn - DM not sent',
     description: 'User has DMs closed or has no mutual servers with the bot',
-    color: 'RED',
+    color: Colors.Red,
 });
 
 const noModLogs = makeEmbed({
     title: 'Warn - No Mod Log',
     description: 'The user was warned, but no mod log was sent. Please check the channel still exists',
-    color: 'RED',
+    color: Colors.Red,
 });
 
 export const warn: CommandDefinition = {
     name: 'warn',
-    requiredPermissions: ['BAN_MEMBERS'],
+    requirements: { roles: RoleGroups.STAFF },
     description: 'Warns a user',
     category: CommandCategory.MODERATION,
     executor: async (msg) => {
         const conn = await getConn();
 
         if (!conn) {
-            await msg.channel.send({ embeds: [noConnEmbed] });
+            await msg.reply({ embeds: [noConnEmbed] });
             return;
         }
 
         const modLogsChannel = msg.guild.channels.resolve(Channels.MOD_LOGS) as TextChannel | null;
-        const hasPermittedRole = msg.member.roles.cache.some((role) => permittedRoles.map((r) => r.toString()).includes(role.id));
         const args = msg.content.split(/\s+/).slice(1);
 
-        if (!hasPermittedRole) {
-            await msg.channel.send({ embeds: [noPermEmbed] });
-            return;
-        }
         if (args.length < 2 && parseInt(args[1]) !== 0) {
             await msg.reply('You need to provide the following arguments for this command: <id> <reason>');
             return;
@@ -142,22 +126,22 @@ export const warn: CommandDefinition = {
         try {
             await warnDoc.save();
         } catch {
-            await msg.channel.send({ embeds: [warnFailed] });
+            await msg.reply({ embeds: [warnFailed] });
             return;
         }
 
         try {
             await targetUser.send({ embeds: [dmEmbed(formattedDate, moderator, targetUser.user, reason)] });
         } catch {
-            await msg.channel.send({ embeds: [noDM] });
+            await msg.reply({ embeds: [noDM] });
         }
 
         try {
             await modLogsChannel.send({ embeds: [modLogEmbed(formattedDate, moderator, targetUser.user, reason)] });
         } catch {
-            await msg.channel.send({ embeds: [noModLogs] });
+            await msg.reply({ embeds: [noModLogs] });
             return;
         }
-        await msg.channel.send({ embeds: [warnEmbed(targetUser.user)] });
+        await msg.reply({ embeds: [warnEmbed(targetUser.user)] });
     },
 };

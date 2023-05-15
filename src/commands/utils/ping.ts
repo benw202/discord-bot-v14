@@ -1,14 +1,13 @@
+import Filter from 'bad-words';
 import { CommandDefinition } from '../../lib/command';
-import { CommandCategory } from '../../constants';
+import { CommandCategory, RoleGroups } from '../../constants';
 
 export const ping: CommandDefinition = {
     name: 'ping',
     description: 'Send back a message',
     category: CommandCategory.UTILS,
-    requiredPermissions: ['MANAGE_WEBHOOKS'],
+    requirements: { roles: RoleGroups.BOT },
     executor: (msg) => {
-        // eslint-disable-next-line global-require
-        const Filter = require('bad-words');
         const msgFilter = new Filter();
 
         const text = msg.content.replace(/\.ping\s*/, '');

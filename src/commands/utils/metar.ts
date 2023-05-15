@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
-import { CommandDefinition } from '../../lib/command';
+import { Colors } from 'discord.js';
+import { CommandDefinition, replyWithEmbed } from '../../lib/command';
 import { CommandCategory, Units } from '../../constants';
 import { makeEmbed, makeLines } from '../../lib/embed';
 import Logger from '../../lib/logger';
@@ -15,9 +16,9 @@ export const metar: CommandDefinition = {
             const noQueryEmbed = makeEmbed({
                 title: 'Metar Error | Missing Query',
                 description: 'You must provide an airport ICAO code.',
-                color: 'RED',
+                color: Colors.Red,
             });
-            await msg.channel.send({ embeds: [noQueryEmbed] });
+            await msg.reply({ embeds: [noQueryEmbed] });
             return Promise.resolve();
         }
         const icaoArg = splitUp[1];
@@ -32,9 +33,9 @@ export const metar: CommandDefinition = {
                 const invalidEmbed = makeEmbed({
                     title: `Metar Error | ${icaoArg.toUpperCase()}`,
                     description: metarReport.error,
-                    color: 'RED',
+                    color: Colors.Red,
                 });
-                await msg.channel.send({ embeds: [invalidEmbed] });
+                await msg.reply({ embeds: [invalidEmbed] });
                 return Promise.resolve();
             }
 
@@ -47,7 +48,7 @@ export const metar: CommandDefinition = {
                     '**Basic Report:**',
                     `**Time Observed:** ${metarReport.time.dt}`,
                     `**Station:** ${metarReport.station}`,
-                    `**Wind:** ${metarReport.wind_direction.repr}${metarReport.wind_direction.repr === 'VRB' ? '' : Units.DEGREES} at ${metarReport.wind_speed.repr} ${Units.KNOTS}`,
+                    `**Wind:** ${metarReport.wind_direction.repr}${metarReport.wind_direction.repr === 'VRB' ? '' : Units.DEGREES} at ${metarReport.wind_speed.repr} ${metarReport.units.wind_speed}`,
                     `**Visibility:** ${metarReport.visibility.repr} ${Number.isNaN(+metarReport.visibility.repr) ? '' : metarReport.units.visibility}`,
                     `**Temperature:** ${metarReport.temperature.repr} ${Units.CELSIUS}`,
                     `**Dew Point:** ${metarReport.dewpoint.repr} ${Units.CELSIUS}`,
@@ -64,15 +65,15 @@ export const metar: CommandDefinition = {
                 footer: { text: 'This METAR report may not accurately reflect the weather in the simulator. However, it will always be similar to the current conditions present in the sim.' },
             });
 
-            await msg.channel.send({ embeds: [metarEmbed] });
+            await replyWithEmbed(msg, metarEmbed);
         } catch (e) {
             Logger.error('metar:', e);
             const fetchErrorEmbed = makeEmbed({
                 title: 'Metar Error | Fetch Error',
                 description: 'There was an error fetching the METAR report. Please try again later.',
-                color: 'RED',
+                color: Colors.Red,
             });
-            await msg.channel.send({ embeds: [fetchErrorEmbed] });
+            await msg.reply({ embeds: [fetchErrorEmbed] });
         }
         return Promise.resolve();
     },
